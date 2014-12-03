@@ -1,0 +1,36 @@
+<p>
+	<strong>Title:</strong>
+	<%= @junction.title %>
+</p>
+
+<table>
+	<tr>
+		<td></td>
+		<td><%= image_tag(@junction.pic @junction.check(@junction.seq, 1)) %></td>
+		<td></td>
+	</tr>
+	<tr>
+		<td><%= image_tag(@junction.pic @junction.check(@junction.seq, 0)) if @junction.lights > 2 %></td>
+		<td></td>
+		<td><%= image_tag(@junction.pic @junction.check(@junction.seq, 2)) if @junction.lights > 2 %></td>
+	</tr>
+	<tr>
+		<td></td>
+		<td>
+			<% case true %>
+			<% when @junction.lights == 2 %>
+				<%= image_tag(@junction.pic @junction.check(@junction.seq, 0)) %>
+			<% when @junction.lights == 4 %>
+				<%= image_tag(@junction.pic @junction.check(@junction.seq, 3)) %>
+			<% end %>
+		</td>
+		<td></td>
+	</tr>
+</table>
+<br>
+
+<%= link_to 'Next', next_path(id: params[:id]) %>
+<br>
+<br>
+<%= link_to 'Back', junctions_path %>
+

@@ -1,0 +1,22 @@
+<h1>Junction List</h1>
+
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Lights</th>
+		<th colspan="3"></th>
+	</tr>
+	<tr></tr>
+
+	<% @junctions.each do |junc| %>
+		<tr>
+			<td><%= junc.title %></td>
+			<td><%= junc.lights %></td>
+			<td><%= link_to 'Show', junction_path(junc) %></td>
+			<td><%= link_to 'Edit', edit_junction_path(junc) %></td>
+			<td><%= link_to 'Delete', junction_path(junc), method: :delete, data: { confirm: 'Delete Junction?'} %></td> 
+		</tr>
+	<% end %>
+</table>
+<br>
+<%= link_to 'New Junction', new_junction_path %>
