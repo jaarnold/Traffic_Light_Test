@@ -8,25 +8,37 @@ class Junction < ActiveRecord::Base
                      less_than: 5 }
   serialize :seq
 
-  def setup (num)
+  def setup num
     # Storage for lights
     # Currently limited to up to four lights, lights 0,2 are a pair and lights 1, 3 are a pair
-    @seq = []
-    num.times { add_light }
+    cycle = 0
+    seq = []
+    num.times { seq << TrafficLight.new }
     # Checks each light, sets lights lights 0 & 2 to be green initially
-    @seq.each { |light|
-      if @seq.index(light) % 2 == 0
+    seq.each { |light|
+      if seq.index(light) % 2 == 0
         light.green!
         light.red!
       end
     }
   end
 
+  def cycle= input
+    if input == '1'
+      cycle!
+    end
+  end
+
+
   # Cycles all lights to next step simultaneously
-  def cycle(arr); arr.each { |light| light.change } end
+  def cycle!
+    seq.each { |light| light.change }
+  end
 
   # Returns array of lights that are on for a given light designated by 'no'
-  def check(arr, no); arr[no].state; end
+  def check no
+    seq[no].state
+  end
 
   # Builds red, orange and green methods which return true if the given colour is on for the given light
   [:red, :orange, :green].each { |colour|
@@ -35,26 +47,19 @@ class Junction < ActiveRecord::Base
     end
   }
 
-  def pic (arr)
+  def pic no
     case true
-    when arr == [:green]
+    when check(no) == [:green]
       "traffic-lights-green.jpg"
-    when arr == [:red]
+    when check(no) == [:red]
       "traffic-light-red.jpg"
-    when arr == [:orange]
+    when check(no) == [:orange]
       "traffic-lights-amber.jpg"
-    when arr == [:red, :orange]
+    when check(no) == [:red, :orange]
       "traffic-lights-red-amber.jpg"
     else
       'Error'
     end
-  end
-
-  private
-
-  # Add a traffic light to the junction, hidden method
-  def add_light
-    @seq << TrafficLight.new
   end
 
 end

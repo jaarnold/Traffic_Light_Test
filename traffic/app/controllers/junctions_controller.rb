@@ -8,9 +8,10 @@ class JunctionsController < ApplicationController
     @junction = Junction.new(junction_params)
 
     if @junction.save
-      # Need to figure out how to store @seq variable for each junction 
-      # for persistant lights
+      # should be unnecessary
       @junction.seq = @junction.setup @junction.lights
+      # As such just run
+      # @junction.setup @junction.lights
       @junction.save
       redirect_to @junction
     else
@@ -47,17 +48,11 @@ class JunctionsController < ApplicationController
     redirect_to junctions_path
   end
 
-  def next
-    @junction = Junction.find(params[:id])
-    @junction.cycle @junction.seq
-    @junction.save
-    redirect_to @junction
-  end
-
 
   private
+
     def junction_params
-      params.require(:junction).permit(:title, :lights)
+      params.require(:junction).permit(:title, :lights, :cycle)
     end
 
 end
