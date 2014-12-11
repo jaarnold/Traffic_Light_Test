@@ -8,11 +8,15 @@ class JunctionsController < ApplicationController
     @junction = Junction.new(junction_params)
 
     if @junction.save
-      # should be unnecessary
-      @junction.seq = @junction.setup @junction.lights
-      # As such just run
-      # @junction.setup @junction.lights
-      @junction.save
+      @junction.id
+
+      @junction.lights.times do |count| 
+        @junction.traffic_lights.create red: true, orange: false, green: false
+        if count.even?
+          @junction.traffic_lights[count].red!
+          @junction.traffic_lights[count].green!
+        end
+      end
       redirect_to @junction
     else
       render 'new'

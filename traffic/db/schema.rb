@@ -11,14 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141203035925) do
+ActiveRecord::Schema.define(version: 20141209033629) do
 
 # Could not dump table "junctions" because of following NoMethodError
 #   undefined method `[]' for nil:NilClass
 
   create_table "traffic_lights", force: true do |t|
+    t.boolean  "red"
+    t.boolean  "orange"
+    t.boolean  "green"
+    t.integer  "junction_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "traffic_lights", ["junction_id"], name: "index_traffic_lights_on_junction_id"
 
 end

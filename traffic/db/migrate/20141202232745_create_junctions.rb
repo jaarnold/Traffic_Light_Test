@@ -3,6 +3,7 @@ class CreateJunctions < ActiveRecord::Migration
     create_table :junctions do |t|
       t.string :title
       t.integer :lights
+      t.string :cycle
 
       t.timestamps
     end
