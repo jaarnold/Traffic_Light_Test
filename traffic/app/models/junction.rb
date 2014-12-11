@@ -10,6 +10,7 @@ class Junction < ActiveRecord::Base
                      greater_than: 1, 
                      less_than: 5 }
 
+  # Used to initiate cycle! from browser
   def cycle= input
     if input == '1'
       cycle!
@@ -25,17 +26,35 @@ class Junction < ActiveRecord::Base
       light.change }
   end
 
-  # Displays lights in pictoral form
-  def pic no
+  # Returns correct CSS code for a given light
+  def light_up no, colour
     case true
     when traffic_lights[no].state == 'Green'
-      "traffic-lights-green.jpg"
+      if colour == 'Green'
+        "green_circle"
+      else
+        "grey_circle"
+      end
     when traffic_lights[no].state == 'Red'
-      "traffic-light-red.jpg"
+      if colour == 'Red'
+        "red_circle"
+      else
+        "grey_circle"
+      end
     when traffic_lights[no].state == 'Orange'
-      "traffic-lights-amber.jpg"
+      if colour == 'Orange'
+        "orange_circle"
+      else
+        "grey_circle"
+      end
     when traffic_lights[no].state == 'RedOrange'
-      "traffic-lights-red-amber.jpg"
+      if colour == 'Red'
+        "red_circle"
+      elsif colour == 'Orange'
+        "orange_circle"
+      else
+        "grey_circle"
+      end
     else
       'Error'
     end

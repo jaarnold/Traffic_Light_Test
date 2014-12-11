@@ -39,7 +39,11 @@ class JunctionsController < ApplicationController
     @junction = Junction.find(params[:id])
 
     if @junction.update(junction_params)
-      redirect_to @junction
+      if request.xhr?
+        render js: "window.location.pathname = #{junction_path(@junction.id).to_json}"
+      else
+        redirect_to @junction
+      end
     else
       render 'edit'
     end

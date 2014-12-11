@@ -1,6 +1,7 @@
 class TrafficLight < ActiveRecord::Base
   belongs_to :junction
 
+  # Functions to change (!) and check (?) individucal lights
   def red!
     if red == false
       puts "/R"
@@ -42,6 +43,7 @@ class TrafficLight < ActiveRecord::Base
     green
   end
 
+  # Changes the lights to the next arrangement in the sequence
   def change
     case true
     #  Red to Red & Orange

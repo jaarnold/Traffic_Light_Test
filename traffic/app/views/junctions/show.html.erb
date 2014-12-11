@@ -1,8 +1,9 @@
 <head>
 
 	<style>
+
 		table {
-			/*border-collapse: collapse;*/
+			border-collapse: collapse;
 		}
 		table, td, th  {
 			border: 1px black;
@@ -48,10 +49,6 @@
 			border-radius: 25px;
 		}
 
-		.box {
-			width: 50px;
-			height: 50px;
-			background: white;
 		}
 
 		.set {
@@ -70,179 +67,15 @@
 
 	<script>
 
-	// Initial data for light states 
-	var light1 = "<%= @junction.traffic_lights[0].state %>"
-	var light2 = "<%= @junction.traffic_lights[1].state %>"
-	var light3 = "<%= @junction.traffic_lights[2].state if @junction.lights > 2%>"
-	var light4 = "<%= @junction.traffic_lights[3].state if @junction.lights > 3%>"
-
-
-	// Returns the next colour in the light cycle, does not overwrite current light state
-	function change(light) {
-		if (light === "Orange") {
-			return "Red"
-		}
-		else if (light === "Red") {
-			return "RedOrange"
-		}
-		else if (light === "RedOrange") {
-			return "Green"
-		}
-		else if (light === "Green") {
-			return "Orange"
-		}
-		else {
-			return ""
-		};
-	}
-
-	// Overwrites all lights with next light state
-	function lightSwitch() {
-		light1 = change(light1);
-		light2 = change(light2);
-		light3 = change(light3);
-		light4 = change(light4);
-		return 'Done';
-	}
-
-	// Changes the red light to match current light state
-	function redLight(light) {
-		if (light === "Red") {
-			return 'red_circle'
-		}
-		else if (light === "RedOrange") {
-			return 'red_circle'
-		}
-		else {
-			return 'grey_circle'
-		};
-	}
-
-	// Changes the orange light to match current light state
-	function orangeLight(light) {
-		if (light === "Orange") {
-			return 'orange_circle'
-		}
-		else if (light === "RedOrange") {
-			return 'orange_circle'
-		}
-		else {
-			return 'grey_circle'
-		};
-	}
-
-	// Changes the green light to match current light state
-	function greenLight(light) {
-	if (light === "Green") {
-			return 'green_circle'
-		}
-		else {
-			return 'grey_circle'
-		};
-	}
-
-	// Visually updates light 1 to show current light state
-	function light1Update() {
-		light1Red.className = redLight(light1);
-		light1Orange.className = orangeLight(light1);
-		light1Green.className = greenLight(light1);
-		return "Done";
-	}
-
-	// Visually updates light 2 to show current light state
-	function light2Update() {
-		light2Red.className = redLight(light2);
-		light2Orange.className = orangeLight(light2);
-		light2Green.className = greenLight(light2);
-		return "Done";
-	}
-
-	// Visually updates light 3 to show current light state if light 3 exists
-	function light3Update() {
-		if (light3 === "") {
-		}
-		else {
-			light3Red.className = redLight(light3)
-			light3Orange.className = orangeLight(light3)
-			light3Green.className = greenLight(light3)
-		};
-		return "Done";
-	}
-
-	// Visually updates light 4 to show current light state if light 4 exists
-	function light4Update() {
-		if (light4 === "") {
-		}
-		else {
-			light4Red.className = redLight(light4)
-			light4Orange.className = orangeLight(light4)
-			light4Green.className = greenLight(light4)
-		};
-		return "Done";
-	}
-
 	// Tells Rails to run junction.cycle! using cycle = 1
-	function tellRails() {
+	function lightCycle() {
 		$.ajax({
-			type: 'GET',
-			url: '<%= edit_junction_path(@junction.id) %>',
-			// data: "{cycle: '1'}",
-			success: function (data) {
-						console.log(data);
-					}
+			type: 'PUT',
+			url: '/junctions/<%= @junction.id %>',
+			 data: {junction: {cycle: '1'}},
+		     
 		});
 	}
-
-
-//			url: '/junctions/103?junction%5Bcycle%5D=1'
-
-
-
-	// Visually updates all lights to show current light state
-	function fullUpdate() {
-		light1Update();
-		light2Update();
-		light3Update();
-		light4Update();
-		return "Done";
-	}
-
-	// On activation changes all lights, visually updates and *saves to database* - to be implemented
-	function lightCycler() {
-		lightSwitch();
-		fullUpdate();
-		tellRails();
-		return "Done";
-	}
-
-	// var cycler = false
-
-	// function cycleSwitch() {
-	// 	if (cycler === false)
-	// 	{
-	// 		cycler === true
-	// 	}
-	// 	else
-	// 	{
-	// 		cycler === false
-	// 	};
-	// };
-
-
-	// On press change lights once and write new info to database
-	// function cycleButton
-
-
-
-
-	// function timeCycle() {
-	// 	if (cycler === true)
-	// 	{
-	// 		setInterval( function () {
-				
-	// 		}, 3000)
-	// 	};
-	// };
 
 	</script>
 
@@ -262,7 +95,7 @@
 				<% ['Red', 'Orange', 'Green'].each do |hue| %> 
 				<tr>
 					<td class='light'>
-						<div id="light2<%= hue %>"></div>
+						<div class="<%= @junction.light_up(1, hue) %>"></div>
 					</td>
 				</tr>
 				<% end %>
@@ -276,7 +109,7 @@
 				<% ['Red', 'Orange', 'Green'].each do |hue| %> 
 				<tr>
 					<td class='light'>
-						<div id="light1<%= hue %>"></div>
+						<div class="<%= @junction.light_up(0, hue) %>"></div>
 					</td>
 				</tr>
 				<% end %>
@@ -288,7 +121,7 @@
 				<% ['Red', 'Orange', 'Green'].each do |hue| %> 
 				<tr>
 					<td class='light'>
-						<div id="light3<%= hue %>"></div>
+						<div class="<%= @junction.light_up(2, hue) %>"></div>
 					</td>
 				</tr>
 				<% end %>
@@ -304,7 +137,7 @@
 				<% ['Red', 'Orange', 'Green'].each do |hue| %> 
 				<tr>
 					<td class='light'>
-						<div id="light1<%= hue %>"></div>
+						<div class="<%= @junction.light_up(0, hue) %>"></div>
 					</td>
 				</tr>
 				<% end %>
@@ -314,7 +147,7 @@
 				<% ['Red', 'Orange', 'Green'].each do |hue| %> 
 				<tr>
 					<td class='light'>
-						<div id="light4<%= hue %>"></div>
+						<div class="<%= @junction.light_up(3, hue) %>"></div>
 					</td>
 				</tr>
 				<% end %>
@@ -325,12 +158,8 @@
 	</tr>
 </table>
 <br>
-<button onclick = "lightCycler()" > Cycle </button>
+<button onclick = "lightCycle(); return false;" > Cycle </button>
 <br>
 <br>
-<script>
-	// Visually display lights on page load
-	onload = fullUpdate()
-</script>
 <%= link_to 'Back', junctions_path %>
 </body>
